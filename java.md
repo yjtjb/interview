@@ -1,1 +1,52 @@
+### 说一下java的范性？
+java给类型制定一个参数，再编译的时候再指定该参数具体的类型。范型可以在编译的时候检查类型安全，如果插入了错误的对象会报错。范性可以用在范性类，范性接口以及范性方法上。
+### 说一下java的反射以及动态代理？
+反射可以在代码运行的时候动态的调用类以及类的方法，主要用在框架和动态代理中。动态代理，对象是通过代理类来实现方法的调用，这样做的好处就是可以很方便的扩展对象的功能，可以在方法执行的前后增加一些自定义的操作。
+### java的集合
+java分为两种，一种collection一种是map，其中collection存放单一元素，map存放健值对。
+关于collection有三个子接口分别是List Queue Set
+关于List set Queue Map的区别是
+List是有序的可重复的
+set是无序的不可重复
+Queue按照特定的规律来确定先后顺序，有序可重复
+Map的key无序不可重复，value无序可重复。
+### 关于List
+主要实现的方式是ArrayList（查询效率高，线程不安全）和LinkedList、vector
+### ArrayList和Vector的区别？
+Vector用了大量的锁来保证线程安全，而Arraylist线程不安全，这两个都是用数组来储存。而且扩容时ArrayList扩容1.5倍。Vecotr扩容2倍。
+### ArrayList与LinkedList的区别？
+ArrayList是用数组储存，而LinkedList采用双向链表结构，所以ArrayList支持随机访问而LinkedList不支持，LinkedList只在增删元素是头部的效率会比ArrayList高其他情况下都比他低
+### ArrayList扩容？
+Arrylist首先通过构造方法指定地岑数据大小，无参数就是默认大小是容量为0的数组，只有进行add的时候才会分配给默认的初始容量扩容到10，有参会判断参数，后进行创造。
+在add阶段首先会进行一个判断如果可用的空间小于0就会进行扩容，首先对当前的容量扩大为1.5倍再和需要的容量进行比较，如果还是比需要的容量小则把需要的容量变成新数组的容量。最后调用arrays.copyof，创新一个有新容量的新数组，再把原来数组中的数据原封不动的复制到新的数组中，在返回新数组的地址。如果在指定位置新增的会使用arraycopy方法，会把指定位置后面的数组复制一份，放在指定位置后面，这时候指定位置空了出来再把元素放入就可以了。
+### Arraylist线程不安全？
+比如到了扩容节点，一个线程认为到了10不用扩容，另一个也是，会导致溢出。但是ArryList用的场景查找比较多，写删比较少所以一般都无所谓。
 
+### 关于Queue
+实现类有ArrayDeque、LinkedList、priorityQuque
+### LinkedList和ArrayDeque的区别
+一个使用链表一个使用可变长度的数组和双指针实现
+ArrayDeque是不能储存null值
+性能ArrayDeque比较好。
+### 优先队列
+在于优先队列的元素出对顺序是与优先级相关的，总是优先级最高的元素出队，是用二叉堆实现的，非线程安全。
+
+### 关于set
+实现类hashset采用hashmap来储存元素 linkedhashset是基于哈希表和链表，满足先进先出的顺序， treeset是红黑树组成，元素是有序的。
+
+### 关于Map
+主要由 hashmap hashtable hashset concurrenthashmap组成其中hashtab和concurrenthashmap是线程安全的。
+hashmap由数组和链表组成的，数组每个地方储存了key和value，在进行元素插入的时候会先计算key的哈希值，再插入到哈希值对应的数组下标下，但如果该数组下标已经有元素了，就会产生哈西冲突，java的hashmap解决哈西冲突的方法是用链表把哈希值一样的数据串起来，当链长度大于8时候会把链表转化为红黑树（数组长度低于64会先扩容）。java8之后采用的是尾插法，新的值插入到链表的尾部。因为在进行扩容的时候如果使用头插法有可能会改变链表元素本来的顺序，产生环，而尾插则不会。hashmap默认初始化长度为16为了方便进行位运算。，因为要进行哈希值与长度的&运算，1111分布比较均匀。
+### hashmap的扩容
+哈希map在hashmap的长度以及负载因子达到一定条件的时候会进行resize扩容，船舰一个新的数组长度是原来哈希数组的两倍，然后遍历原来的哈希数组把所有的节点重新hash到原数组。（数组扩容后计算方式会发生改变）
+### 为什么equal要重写hashCode？
+我们在哈希表中先进行hashCode找到相同的哈希值在通过equal方法进行查找我们需要的数据，如果不重写hashcode可能出现equal一样hashCode不一样这会让hashmap找不到数据。
+
+### hashMap和HashTable的区别？
+map线程不安全，table线程安全，map的key可以为null，table不可以，扩容时候hashmap为两倍初识大小为16.talbe为11每次为2n+1，在初始如果制定了长度的话hashmap会把他扩充到2的幂次方。
+
+### concurrentHashMap和HashTable
+courentHahsMap和Hashtable，hashtable在对所有数据进行操作的时候都会上锁syn导致效率低下，而concurrentHashMap是用1.7的时候采用分段的数组和链表实现，对整个数组进行了分段，每个segement都分配一把锁，不同的线程如果访问不同的segement就不会产生冲突，问题在于每次查询的时候还需要遍历链表。而1.8没有使用segement分段锁而是采用了数组链表和红黑树来实现，并发采用CAS和syno来操作，锁粒更细，定位出要写的node之后如果是空的用CAS尝试写入，如果不是空的利用sy锁头节点后写入数据，因为他的链表会转化为红黑树，锁只锁当前链表或者红黑树的首节点，不会影响其他的读写。同时迭代器courrenthashMap使用了快速失败机制，而Hashtable没有，快速失败机制是在迭代器进行迭代的时候如果发现数据并修改过了，就会返回错误，用来做同步。
+
+### 为什么1.8可以使用sy锁
+因为java官方进行了升级，使用的时候先用偏向锁获取，如果成功就用CAS写，如果失败会短暂自旋，在刮起。
