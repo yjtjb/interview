@@ -5,7 +5,7 @@
 ### mysql的架构是什么样子的？
 客户端通过连接器与mysql进行连接，首先在mysql缓存中查找是不是有对应的数据，如果有就返回，如果没有通过分析器进行语法分析，通过优化器进行计划生成和索引的选择，通过执行器去操作数据库引擎返回结果，数据库引擎储存数据提供读写接口。
 ### mysql储存引擎
-mysql的储存引擎是采用插件式的架构，可以为不同的数据库配置不同的储存引擎，可以为主要分为inondb和myisam，其中现在的mysql默认innodb，其中innodb和myiasm的区别是，innodb支持行级锁而myisam只支持表级锁，innodb支持事务而myisam不支持，innodb支持redo log恢复数据库，innodb支持外建，innodb的索引文件和数据文件都是一样的myisam分开都是B+树，innodb支持MVCC。
+mysql的储存引擎是采用插件式的架构，可以为不同的数据库配置不同的储存引擎，可以为主要分为inondb和myisam，其中现在的mysql默认innodb，其中innodb和myiasm的区别是，innodb支持行级锁而myisam只支持表级锁，innodb支持事务而myisam不支持，innodb支持redo log恢复数据库，innodb支持外建，innodb的索引文件和数据文件都是一样的myisam分开，都是B+树，innodb支持MVCC，innodb支持簇组索引（数据和主键放在一起）所以可以支持行级别的锁，
 ### 什么是索引？
 相当于书中的目录，就是帮助储存引擎快速搜索数据的一种数据结构。
 ### 索引有哪些分类？
